@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+    <style type="text/css">
+      .mark_box {
+        height: 720px;
+        width: 1280px;
+        background: transparent;
+        overflow: hidden;
+        display: none;
+      }
+      .mark_box.show {
+        display: block;
+      }
+      p {
+        margin: 0;
+      }
+      .container {
+        bottom: 15px;
+        display: block;
+        height: 173px;
+        position: absolute;
+        right: 15px;
+        width: 430px;
+        z-index: 2;
+      }
+
+      a,
+      a:focus {
+        text-decoration: none;
+        outline: none;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        -webkit-focus-ring-color: rgba(0, 0, 0, 0);
+      }
+
+      .mark_position {
+        width: 430px;
+        background: url('../images/bg-small.png') no-repeat;
+        box-sizing: border-box;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 10px;
+        text-align: center;
+        color: white;
+        cursor: pointer;
+        border-radius: 10px;
+      }
+
+      .mark_content {
+        width: 245px;
+        overflow: hidden;
+        float: left;
+        margin-top: 5px;
+        margin-left: 10px;
+      }
+
+      .mark_content_title {
+        font-size: 16px;
+        overflow: hidden;
+        text-align: left;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-weight: normal;
+        margin-bottom: 10px;
+        margin-top: 15px;
+      }
+
+      .mark_advertising {
+        width: 133px;
+        /* padding-top: 15px; */
+        margin-top: 10px;
+        overflow: hidden;
+        float: right;
+        font-size: 0;
+        margin-right: 10px;
+      }
+
+      .mark_advertising p {
+        font-size: 12px;
+      }
+
+      .mark_content_t {
+        position: relative;
+        width: 100px;
+        text-align: center;
+        color: yellow;
+        float: left;
+      }
+
+      .t_number {
+        font-size: 80px;
+        margin: 0;
+      }
+
+      .t_units {
+        position: absolute;
+        right: -13px;
+        top: 12px;
+      }
+
+      .mark_content_info {
+        padding-top: 5px;
+        width: 125px;
+        float: right;
+        font-size: 14px;
+        overflow: hidden;
+      }
+
+      .mark_content_info p {
+        margin-top: 8px;
+        line-height: 14px;
+      }
+
+      .mark_advertising img {
+        border: none;
+        display: block;
+        outline: none;
+        width: 133px;
+        height: 133px;
+        margin-top: -2px;
+        margin-bottom: 5px;
+      }
+
+      .hide_info {
+        display: block;
+        left: -200px;
+        position: absolute;
+        top: 0;
+      }
+
+      iframe {
+        background: transparent;
+        border-width: 0;
+        border-color: transparent;
+        display: none;
+        font-size: 1px;
+        height: 1px;
+        opacity: 0;
+        width: 1px;
+      }
+    </style>
+  </head>
+  <script>
+    var xmlhttp
+    //创建xmlhttprequest对象
+    function createXMLHttpRequest() {
+      xmlhttp = new XMLHttpRequest() //这里要判断IE的写法
+    }
+    function startRequest(url) {
+      createXMLHttpRequest()
+      xmlhttp.open('GET', url, true) //true:异步，false:同步
+      xmlhttp.onreadystatechange = handleStateChange
+      xmlhttp.send(null)
+    }
+    function handleStateChange() {
+      if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        var txt = xmlhttp.responseText
+        if (txt != null && txt != '') {
+          var txtData = JSON.parse(txt)
+          if (txtData.code == 200) {
+            setData(txtData.data)
+          } else {
+            alert(txtData.message)
+          }
+        }
+      }
+    }
+    function setData(txt) {
+      var title = document.getElementById('title')
+      var temp = document.getElementById('temp')
+      var tempBetween = document.getElementById('tempBetween')
+      var typeName = document.getElementById('typeName')
+      var wind = document.getElementById('wind')
+      var aqi = document.getElementById('aqi')
+      var adImg = document.getElementById('adImg')
+      var markBox = document.getElementById('markBox')
+
+      title.innerText = txt.title
+      temp.innerText = txt.temp
+      tempBetween.innerText = txt.temp_between
+      typeName.innerText = txt.weather_type_name
+      wind.innerText = txt.dir + txt.scale + '级'
+      aqi.innerText = '空气质量: ' + txt.aqi
+      adImg.src = txt.image_url
+      setTimeout(function () {
+        markBox.classList.add('show')
+      }, 500)
+    }
+    function getQueryVariable(variable) {
+      var query = window.location.search.substring(1)
+      var vars = query.split('&')
+      for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split('=')
+        if (pair[0] == variable) {
+          return pair[1]
+        }
+      }
+      return false
+    }
+    var id = getQueryVariable('id')
+    // 测试
+    // var url =
+    //   'https://operation-test.huan.tv/api/client/task/find/alter/weather?id='
+    //   线上
+    var url = 'http://106.15.191.219/api/client/task/find/alter/weather?id='
+    startRequest(url + id)
+  </script>
+  <body>
+    <div class="mark_box" id="markBox">
+      <div class="mark_position">
+        <div class="mark_content">
+          <h3 class="mark_content_title" id="title"></h3>
+          <div class="mark_content_t">
+            <p class="t_number" id="temp"></p>
+            <span class="t_units">℃</span>
+          </div>
+          <div class="mark_content_info">
+            <p class="temperature" id="tempBetween"></p>
+            <p class="pollution" id="typeName"></p>
+            <p class="wind" id="wind"></p>
+            <p class="pollution2" id="aqi"></p>
+          </div>
+        </div>
+        <div class="mark_advertising">
+          <img id="adImg" src="" />
+          <p>按返回键取消广告</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

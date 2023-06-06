@@ -1,0 +1,10 @@
+body{
+    --theme-color:#FA8C16; /*主题色*/
+    --theme-box-shadow:0 6px 18px 0 rgb(38 38 38 / 14%);/*主题阴影*/
+    --theme-bg-color:#fafafa;
+    --theme-box-padding:16px; /*盒子内边距*/
+    --theme-box-margin:16px 0px; /*盒子外边距*/
+    --theme-btn-color:#666; /*按钮背景颜色*/
+    --theme-grey-color:#999; /*按钮置灰颜色*/
+    --theme-font-size:14px; /*主题标准字号*/
+}

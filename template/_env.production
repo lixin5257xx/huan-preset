@@ -1,0 +1,2 @@
+VITE_SENTRY_PROJECT:'Vue',    //同上图创建sentry project所填
+VITE_SENTRY_VERSION:'product@0.0.1', //自定义的release版本，上传sourcemap后可在sentry中项目的版本中看到

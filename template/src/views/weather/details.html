@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+    <style type="text/css">
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      .wapper_box {
+        width: 1280px;
+        height: 720px;
+        overflow: hidden;
+        /* background: rgba(0, 0, 0, 0.5); */
+        /* background-color: #f00; */
+        /* background-color: rgba(255, 0, 0, 0.5); */
+        background: url('./images/bg-big.png') no-repeat;
+      }
+
+      .wapper {
+        position: relative;
+        height: 720px;
+        box-sizing: border-box;
+        padding: 50px 70px;
+      }
+
+      @font-face {
+        font-family: 'BigRuixian';
+        /*这里填写字体名*/
+        src: url('@/assets/font/REEJI-BigRuixian-RegularGB2.0.ttf');
+      }
+
+      h1 {
+        box-sizing: border-box;
+        color: #e95611;
+        font-size: 40px;
+        font-weight: 400;
+        font-family: 'BigRuixian';
+        height: 55px;
+      }
+
+      h3 {
+        box-sizing: border-box;
+        font-size: 24px;
+        color: white;
+        font-weight: 500;
+        margin-bottom: 6px;
+        /* margin-top: 10px; */
+        height: 35px;
+      }
+      p {
+        line-height: 14px;
+      }
+      img {
+        border: none;
+        display: block;
+      }
+
+      img[src=''],
+      img:not([src]) {
+        opacity: 0;
+      }
+
+      .wapper_content {
+        float: left;
+        width: 776px;
+        height: 580px;
+        overflow: hidden;
+        margin-top: 25px;
+      }
+
+      .wapper_content_weather,
+      .wapper_content_trend {
+        width: 100%;
+        list-style: none;
+        overflow: hidden;
+        text-align: center;
+        color: white;
+      }
+
+      .wapper_content_weather {
+        height: 240px;
+        background: url('./images/details-bg-row2.png') no-repeat;
+        margin: 0 0 21px;
+      }
+
+      .wapper_content_trend {
+        height: 200px;
+        background: url('./images/details-bg-row.png') no-repeat;
+      }
+
+      .wapper_content_weather li {
+        width: 110px;
+        float: left;
+        height: 240px;
+      }
+
+      .wapper_content_weather li {
+        border-right: 1px rgba(255, 255, 255, 0.2) solid;
+      }
+
+      .wapper_content_weather li:nth-child(7) {
+        border-right: none;
+      }
+
+      .wapper_content_weather li:nth-child(1) {
+        color: #fff043;
+      }
+
+      .wapper_content_weather li p {
+        font-size: 16px;
+        line-height: 31px;
+      }
+
+      .wapper_content_weather li p:nth-child(1) {
+        line-height: 60px;
+      }
+
+      .wapper_content_weather li p:nth-child(2) {
+        font-size: 22px;
+      }
+
+      .wapper_content_weather li p:nth-child(4) {
+        margin-top: 12px;
+      }
+
+      .wapper_content_trend li {
+        float: left;
+        width: 258px;
+        height: 99px;
+        overflow: hidden;
+      }
+
+      .wapper_content_trend li:nth-child(3n - 1),
+      .wapper_content_trend li:nth-child(3n - 2) {
+        border-right: 1px rgba(255, 255, 255, 0.9) solid;
+      }
+
+      .wapper_content_trend li:nth-child(n + 4) {
+        border-top: 1px rgba(255, 255, 255, 0.2) solid;
+      }
+
+      .wapper_content_trend li span {
+        display: block;
+        font-size: 14px;
+        float: left;
+        text-align: center;
+        /* padding: 14px 0; */
+        width: 88px;
+        margin-left: 10px;
+        margin-top: 10px;
+      }
+
+      .wapper_content_trend li img {
+        display: block;
+        height: 46px;
+        margin: 0 auto 10px;
+        width: 46px;
+      }
+
+      .trend_text {
+        box-sizing: border-box;
+        width: 160px;
+        float: right;
+        padding: 14px;
+        text-align: left;
+        margin-top: 3px;
+      }
+
+      .trend_text p:nth-child(1) {
+        font-size: 20px;
+        margin-bottom: 5px;
+      }
+
+      .trend_text p:nth-child(2) {
+        overflow: hidden;
+        height: 44px;
+        line-height: 24px;
+        font-size: 14px;
+        margin-top: 10px;
+      }
+
+      .wapper_img {
+        margin-top: 66px;
+        float: right;
+        width: 336px;
+        height: 580px;
+      }
+
+      .wapper_img img {
+        width: 336px;
+        height: 500px;
+        margin: 0 0 5px;
+      }
+
+      .wapper_img p {
+        color: #fff;
+        font-size: 18px;
+        text-align: center;
+        width: 336px;
+      }
+    </style>
+  </head>
+  <script>
+    var xmlhttp
+    //创建xmlhttprequest对象
+    function createXMLHttpRequest() {
+      xmlhttp = new XMLHttpRequest() //这里要判断IE的写法
+    }
+    function startRequest(url) {
+      createXMLHttpRequest()
+      xmlhttp.open('GET', url, true) //true:异步，false:同步
+      xmlhttp.onreadystatechange = handleStateChange
+      xmlhttp.send(null)
+    }
+    function handleStateChange() {
+      if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        var txt = xmlhttp.responseText
+        if (txt != null && txt != '') {
+          var txtData = JSON.parse(txt)
+          if (txtData.code == 200) {
+            setData(txtData.data)
+          } else {
+            alert(txtData.message)
+          }
+        }
+      } else {
+      }
+    }
+    function setData(txt) {
+      var title = document.getElementById('title')
+      var city = document.getElementById('city')
+      var forecast = document.getElementById('forecast')
+      var uvBrief = document.getElementById('uvBrief')
+      var uvDetails = document.getElementById('uvDetails')
+      var fluBrief = document.getElementById('fluBrief')
+      var fluDetails = document.getElementById('fluDetails')
+      var dressingBrief = document.getElementById('dressingBrief')
+      var dressingDetails = document.getElementById('dressingDetails')
+      var carBrief = document.getElementById('carBrief')
+      var carDetails = document.getElementById('carDetails')
+      var sportBrief = document.getElementById('sportBrief')
+      var sportDetails = document.getElementById('sportDetails')
+      var travelBrief = document.getElementById('travelBrief')
+      var travelDetails = document.getElementById('travelDetails')
+
+      title.innerText = txt.title
+      city.innerText = '【' + txt.city + '】 最近7天天气趋势'
+      var forecastHtml = ''
+      txt.forecast.forEach(function (item) {
+        forecastHtml +=
+          '  <li>' +
+          '<p>' +
+          item.temp +
+          '</p>' +
+          '<p>' +
+          item.temp_between +
+          '</p>' +
+          '<p>°C</p>' +
+          '<p>' +
+          item.weather_type_name +
+          '</p>' +
+          '<p>' +
+          item.dir +
+          '</p>' +
+          '<p>' +
+          item.scale +
+          '级</p>' +
+          '</li>'
+      })
+      forecast.innerHTML = forecastHtml
+      uvBrief.innerText = txt.suggestion.uv.brief
+      uvDetails.innerText = txt.suggestion.uv.details
+      fluBrief.innerText = txt.suggestion.flu.brief
+      fluDetails.innerText = txt.suggestion.flu.details
+      dressingBrief.innerText = txt.suggestion.dressing.brief
+      dressingDetails.innerText = txt.suggestion.dressing.details
+      carBrief.innerText = txt.suggestion.car_washing.brief
+      carDetails.innerText = txt.suggestion.car_washing.details
+      sportBrief.innerText = txt.suggestion.sport.brief
+      sportDetails.innerText = txt.suggestion.sport.details
+      travelBrief.innerText = txt.suggestion.travel.brief
+      travelDetails.innerText = txt.suggestion.travel.details
+      adImg.src = txt.image_url
+    }
+    function getQueryVariable(variable) {
+      var query = window.location.search.substring(1)
+      var vars = query.split('&')
+      for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split('=')
+        if (pair[0] == variable) {
+          return pair[1]
+        }
+      }
+      return false
+    }
+    var id = getQueryVariable('id')
+    // 测试
+    // var url =
+    //   'https://operation-test.huan.tv/api/client/task/find/info/weather?id='
+    // 正式
+    var url = 'http://106.15.191.219/api/client/task/find/info/weather?id='
+    startRequest(url + id)
+  </script>
+  <body>
+    <div class="wapper_box">
+      <div class="wapper">
+        <h1 id="title"></h1>
+        <div class="wapper_content">
+          <h3 id="city"></h3>
+          <ul class="wapper_content_weather" id="forecast"></ul>
+          <h3>今天生活指数</h3>
+          <ul class="wapper_content_trend" id="trend">
+            <li>
+              <span>
+                <img
+                  id="uvImg"
+                  src="https://huanepg.oss-cn-beijing.aliyuncs.com/project/HugeWhale/static/images/icon_ultraviolet.png"
+                />
+                紫外线指数
+              </span>
+              <div class="trend_text">
+                <p id="uvBrief"></p>
+                <p id="uvDetails"></p>
+              </div>
+            </li>
+            <li>
+              <span>
+                <img
+                  id="fluImg"
+                  src="https://huanepg.oss-cn-beijing.aliyuncs.com/project/HugeWhale/static/images/icon_cold.png"
+                />
+                感冒指数
+              </span>
+              <div class="trend_text">
+                <p id="fluBrief"></p>
+                <p id="fluDetails"></p>
+              </div>
+            </li>
+            <li>
+              <span>
+                <img
+                  id="dressingImg"
+                  src="https://huanepg.oss-cn-beijing.aliyuncs.com/project/HugeWhale/static/images/icon_dressing.png"
+                />
+                穿衣指数
+              </span>
+              <div class="trend_text">
+                <p id="dressingBrief"></p>
+                <p id="dressingDetails"></p>
+              </div>
+            </li>
+            <li>
+              <span>
+                <img
+                  id="carImg"
+                  src="https://huanepg.oss-cn-beijing.aliyuncs.com/project/HugeWhale/static/images/icon_carwash.png"
+                />
+                洗车指数
+              </span>
+              <div class="trend_text">
+                <p id="carBrief"></p>
+                <p id="carDetails"></p>
+              </div>
+            </li>
+            <li>
+              <span>
+                <img
+                  id="sportImg"
+                  src="https://huanepg.oss-cn-beijing.aliyuncs.com/project/HugeWhale/static/images/icon_movement.png"
+                />
+                运动
+              </span>
+              <div class="trend_text">
+                <p id="sportBrief"></p>
+                <p id="sportDetails"></p>
+              </div>
+            </li>
+            <li>
+              <span>
+                <img
+                  id="travelImg"
+                  src="https://huanepg.oss-cn-beijing.aliyuncs.com/project/HugeWhale/static/images/icon_air.png"
+                />
+                出游
+              </span>
+              <div class="trend_text">
+                <p id="travelBrief"></p>
+                <p id="travelDetails"></p>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="wapper_img">
+          <img id="adImg" src="" />
+          <p>按返回键退出</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
